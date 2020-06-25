@@ -19,16 +19,6 @@ date_format = "Jan 2006"
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 
 [[item]]
-  organization = "Oberlin College"
-  organization_url = ""
-  title = "B.A. Physics and Astronomy, B.A. Mathematics"
-  url = ""
-  certificate_url = ""
-  date_start = "2018-05"
-  date_end = ""
-  description = ""
-
-[[item]]
   organization = "Sigma Xi Scientific Research Honors Society"
   organization_url = "https://www.sigmaxi.org"
   title = "Elected Member"
