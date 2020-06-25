@@ -24,7 +24,7 @@ date_format = "Jan 2006"
   title = "Elected Member"
   url = ""
   certificate_url = ""
-  date_start = "2017-05"
+  date_start = "2017-05-11"
   date_end = ""
   description = ""
 +++
