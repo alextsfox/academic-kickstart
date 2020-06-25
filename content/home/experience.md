@@ -22,7 +22,7 @@ date_format = "Jan 2006"
   company = "University of Wyoming"
   company_url = ""
   location = "Laramie, WY"
-  date_start = "2020-06"
+  date_start = "2020-06-11"
   date_end = ""
   description = """
   * Brent Ewers lab
@@ -34,8 +34,8 @@ date_format = "Jan 2006"
   company = "University of Wyoming"
   company_url = ""
   location = "Laramie, WY"
-  date_start = "2019-06"
-  date_end = "2019-11"
+  date_start = "2019-06-11"
+  date_end = "2019-11-11"
   description = """
   * Maintained eddy covariance, micrometeorology, and soil science instrumentation.
   * Data QA/QC and processing.
@@ -45,8 +45,8 @@ date_format = "Jan 2006"
   company = "Cooperative Institute for Satellite and Earth System Studies (CICESS)"
   company_url = ""
   location = "College Park, MD"
-  date_start = "2018-11"
-  date_end = "2019-05"
+  date_start = "2018-11-11"
+  date_end = "2019-05-11"
   description = """
   * Created python tools to process remote-sensed satellite data for agricultural water management  applications
   * Evapotranspiration modeling
@@ -56,8 +56,8 @@ date_format = "Jan 2006"
   company = "The Land Institute"
   company_url = ""
   location = "Salina, KS"
-  date_start = "2018-09"
-  date_end = "2019-10"
+  date_start = "2018-09-11"
+  date_end = "2019-10-11"
   description = """
   * Researched sustainable agriculture, focusing on the development of perennial polycultures.
   * Work involved collecting and processing agricultural data on crop yields, pest management, and
@@ -68,8 +68,8 @@ breeding programs.
   company = "Oberlin College Physics and Astronomy Department"
   company_url = ""
   location = "Oberlin, OH"
-  date_start = "2017-06"
-  date_end = "2017-08"
+  date_start = "2017-06-11"
+  date_end = "2017-08-11"
   description = """
   * Created and analyzed post-Newtonian models to simulate the precession dynamics of binary black hole systems using Python.
   
@@ -78,8 +78,8 @@ breeding programs.
   company = "Oberlin College Math Department"
   company_url = ""
   location = "Oberlin, OH"
-  date_start = "2016-06"
-  date_end = "2017-01"
+  date_start = "2016-06-11"
+  date_end = "2017-01-11"
   description = """
   * Conducted research on a more mathematically rigorous generalization of the Aubry-André Harper Model of the quantum hall effect.
   """
