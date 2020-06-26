@@ -13,7 +13,7 @@
 #   Latest themes (may require updating): https://sourcethemes.com/academic/themes/
 #   Browse built-in themes in `themes/academic/data/themes/`
 #   Browse user installed themes in `data/themes/`
-theme = "classic"
+theme = "minimal"
 
 # Enable users to switch between day and night mode?
 day_night = true
@@ -113,8 +113,8 @@ email = "afox18@uwyo.edu"
 #   Set to `[]` to disable, or comment out unwanted lines with a hash `#`.
 contact_links = [
   #{icon = "twitter", icon_pack = "fab", name = "DM Me", link = "https://twitter.com/Twitter"},
-  {icon = "github", icon_pack = "fab", name = "Github", link = "https://github.com/Waldinian"},
-  {icon = "linkedin", icon_pack = "fab", name = "Linkedin", link = "https://www.linkedin.com/in/alex-fox-67a3b7152"}
+  #{icon = "github", icon_pack = "fab", name = "Github", link = "https://github.com/Waldinian"},
+  #{icon = "linkedin", icon_pack = "fab", name = "Linkedin", link = "https://www.linkedin.com/in/alex-fox-67a3b7152"}
   #{icon = "comments", icon_pack = "fas", name = "Discuss on Forum", link = "https://discourse.gohugo.io"},
   # {icon = "telegram", icon_pack = "fab", name = "Telegram Me", link = "https://telegram.me/@Telegram"},
   ]
