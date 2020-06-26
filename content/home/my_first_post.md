@@ -1,8 +1,8 @@
-+++
+---
 title: "My_first_post"
 date: 2020-06-26T16:12:15-06:00
-draft: false
-+++
+draft: true
+---
 
 #This is my first post
 
