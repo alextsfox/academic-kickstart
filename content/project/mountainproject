@@ -1,0 +1,30 @@
+---
+title: "Mountain Project"
+date: 2021-03-21T17:06:49-06:00
+draft: true
+---
+
+This is my long-term ongoing project to sift through ~~all~~ a large portion of mountainproject data. It's sort of my data science
+pet project. I work on it pretty sporadically, and don't really have a definite goal for it. 
+
+Here's what I've done, and what I want to do in the future:
+
+1. **Scrape Mountain Project** for user and climb data (not listed on github; I'm not sure if mountainproject would appreciate a tool gather and disseminate most of their users' information). 
+Mountainproject has a limited API that lets someone download a *specific* user's information, probably for individual use, but it can be adapted to download larger amount of data.
+I've done this by writing a script to crawl each US state's "classic climbs" page and downloading user tick data (ie. climbs they have done) for everyone who ticks or rates any of those climbs. 
+When I initially did this, it was in a house with crappy internet and that would shut off every ~5 hours or so, so it took several days to actually get all the information I wanted. In the end,
+I wound up with about ~200,000 datapoints to mess around with. Now that I live somewhere with better internet, I could probably top this though.
+
+2. **Organize and filter the data** to get make it actually readable. This was also a bit of a nightmare. 
+It turns out that the [yosemite decimal system](https://www.mountainproject.com/international-climbing-grades) difficult to understand for both humans and machines. 
+When downloading the data, I probably should have found a way to request *Ewbanks* rating data, but hindsight is 20/20 I suppose. 
+Another issue is that most people don't really select *how* they climbed a certain route: Did you faall? Did you do it on your first try? Was it on toprope? This is a single pitch climb, yet you claim to have climbed 6 pitches of it. How am I supposed to interpret that?
+Perhaps I shouldn't be so annoyed. After all, I'm not sure if any of these people consented to have strangers analyze their climbing data. 
+(For the record though, I did my best to anonymize the data, and when I do get around to publishing something substantial on it, it won't include any information that could be used to identify anyone.)
+Finding ways to distinguish all of this noise will be challanging, since limiting my dataset to only people who log their climbs how *I* want them to severely limits what I can use (<1% of the data) and injects a lot of selection bias as well.
+
+3. Do something interesting. I've made some rudimentary analyses that I think are fun, like comparing people's maximum sent grades to their median sent grade (turns out that most people can climb *way* harder than they usually try to), but
+the holy grail for me would be do rank climbing areas from "most" to "least" sandbagged --  ie. what places shut down otherwise strong climbers, and where can almost anyone hop on a 5.12? (though it's probably just going to be Vedauwoo and the Red River Gorge). 
+I'll try to post updates on that as I come to it. 
+
+So that's what to expect from this project blog (from time to time). Hopefully I can put some sort of dent in this project again this year.
