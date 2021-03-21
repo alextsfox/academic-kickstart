@@ -10,7 +10,7 @@ authors:
 superuser: true
 
 # Role/position
-role: Hydrology PhD Student
+role: Hydrologic Science PhD Student
 
 # Organizations/Affiliations
 organizations:
@@ -18,11 +18,12 @@ organizations:
   url: ""
 
 # Short bio (displayed in user profile at end of posts)
-bio: PhD student interested in water and carbon cycling in pastureland
+bio: PhD student studying first-principles biophysical modeling applications for land management.
 
 interests:
 - Ecohydrology
 - Sustainable Agriculture
+- First-Principles Biophysics
 - Climbing
 
 education:
@@ -47,15 +48,15 @@ social:
   link: https://scholar.google.com/citations?hl=en&user=tDwx2doAAAAJ
 - icon: github
   icon_pack: fab
-  link: https://github.com/waldinian
+  link: https://github.com/alextsfox
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
-# - icon: cv
-#   icon_pack: ai
-#   link: files/cv.pdf
+- icon: cv
+  icon_pack: ai
+  link: files/cv.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
-email: ""
+email: "afox18@uwyo.edu"
 
 # Organizational groups that you belong to (for People widget)
 #   Set this to `[]` or comment out if you are not using People widget.
@@ -64,5 +65,7 @@ user_groups:
 - Visitors
 ---
 
-Alex Fox is a PhD student in Hydrology, studying under Brent Ewers at the University of Wyoming. 
-His interests include water and carbon cycling in pastureland, physics, and rock climbing. 
+I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. I'm particularly interested in using first principles of biophysics to study sustainability and make land management decisions. Currently, my projects are:
+
+* Applying a first principles biophysical model to elucidate how intermediate wheatgrass bread for grain production ([Kernza](https://kernza.org/)) will fair as a perennial replacement for annual wheat in eastern Wyoming
+* Studying how functional differences between ecosystems along a climatic gradient in the Wyoming Snowy Range affect forest carbon, water, and nutrient response to disturbances such as fire and beetle outbreaks.
