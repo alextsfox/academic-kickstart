@@ -9,6 +9,12 @@ tags:
     - Eddy Covariance
     - Talks
     - Modeling
+authors:
+    - admin
+    - Brent Ewers
+    - Carmela Guadagno
+    - Bridger Huhn
+    - Benjamin Romanjenko
 ---
 
 The Ewers lab group gave a seminar to the UW botany department. See the slides here
