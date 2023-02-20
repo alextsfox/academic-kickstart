@@ -2,6 +2,15 @@
 title: "Linking Plant-Scale Processes to Ecosystem Function: PhD Proposal Defense Seminar"
 date: 2023-02-09T16:12:15-06:00
 draft: false
+tags:
+    - PhD Research
+    - Modeling
+    - Eddy Covariance
+    - Talks
+projects:
+    - Kernza
+    - Snow
+    - Eddy Covariance Pipeline
 ---
 
 

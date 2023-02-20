@@ -2,6 +2,13 @@
 title: "Botany Seminar Slides"
 date: 2022-12-05T16:12:15-06:00
 draft: false
+projects:
+    - Snow
+tags:
+    - PhD Research
+    - Eddy Covariance
+    - Talks
+    - Modeling
 ---
 
 The Ewers lab group gave a seminar to the UW botany department. See the slides here
