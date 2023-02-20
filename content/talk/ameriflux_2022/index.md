@@ -27,4 +27,5 @@ authors:
 
 I presented a poster on recent developments and projects at Rocky Mountain Ameriflux sites at the 2022 Ameriflux Annual Meeting
 
-[Poster](files/Poster_collab.pptx.pdf)
+
+{{% staticref "files/Poster_collab.pdf" %}}Download the poster{{% /staticref %}}
