@@ -21,10 +21,12 @@ organizations:
 bio: PhD student studying first-principles biophysical modeling applications for land management.
 
 interests:
-- Ecohydrology
+- Hydrology
 - Sustainable Agriculture
-- First-Principles Biophysics
-- Climbing
+- Biophysics
+- Ecoinformatics
+- Fluxin' Around
+- Falling off of bicycles
 
 education:
   courses:
@@ -65,7 +67,5 @@ user_groups:
 - Visitors
 ---
 
-I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. I'm particularly interested in using first principles of biophysics to study sustainability and make land management decisions. Currently, my projects are:
-
-* Applying a first principles biophysical model to elucidate how intermediate wheatgrass bread for grain production ([Kernza](https://kernza.org/)) will fair as a perennial replacement for annual wheat in eastern Wyoming
-* Studying how functional differences between ecosystems along a climatic gradient in the Wyoming Snowy Range affect forest carbon, water, and nutrient response to disturbances such as fire and beetle outbreaks.
+I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. 
+I'm particularly interested in applying modern technology and informatics tools to study ecosystem fluxes and inform land management decisions. 
