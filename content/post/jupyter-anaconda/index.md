@@ -5,6 +5,8 @@ draft: false
 tags:
     - Tutorials
 ---
+Image source: https://xkcd.com/1987/
+
 I wrote this tutorial to help people in my lab learn how to manage their python and R environments using anaconda. I've gotten some positive feedback on it, so hopefully you'll find it helpful too.
 
 
@@ -310,4 +312,3 @@ I closed my browser and want to start jupyter again: connect to `http://localhos
 
 My version of python (`python --version`) is wrong, or is located somewhere weird, or none of my packages will load (`ModuleNotFoundError` in python) even though they show up in my environment: ask Alex for help.
 
-Image source: https://xkcd.com/1987/
