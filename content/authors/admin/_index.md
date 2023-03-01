@@ -18,7 +18,7 @@ organizations:
   url: ""
 
 # Short bio (displayed in user profile at end of posts)
-bio: PhD student studying first-principles biophysical modeling applications for land management.
+bio: PhD student in Hydrologic Science. I study technology and models needed to measure ecosystem function, and how to scale between individual plants and whole ecosystem behavior.
 
 interests:
 - Hydrology
