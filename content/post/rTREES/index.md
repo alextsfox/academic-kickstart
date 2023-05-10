@@ -12,7 +12,9 @@ In general though, it's a good idea to manage all of your software projects usin
 It also makes it easier for you to share your work with others, by giving you a portable/sharable environment that other people can directly use to run your code.
 
 This tutorial uses anaconda to manage your environments, but there are other ways of doing this as well. I'm most familiar with anaconda, and I think it's the most common environment manager out there.
-If you're curious about how to use anaconda for other purposes, check out my Jupyter tutorial as well.
+If you get through this tutorial and you hated every second of it, you can check out the `renv` virtual environment manager exlusively for R. I've never used it, but it's worth looking into maybe: https://posit.co/blog/renv-project-environments-for-r/.
+
+If you're curious about how to use anaconda for other purposes, check out my Jupyter tutorial as well: {{< ref "jupyter-anaconda" >}}
 
 # R, rTREES, and RStudio
 
@@ -54,58 +56,7 @@ If you don't see this, then anaconda isn't running. You can start anaconda by ty
 
 If any of this gives you an error, then anaconda and its environments might not have been added to your path. I'd recommend asking Alex for help if you encounter this.
 
-### (Optional: technical aside) What does this mean? How is (base) different from my default shell outside of conda?
-When you run a program, for example when you run R from the command line, your computer has to know where to find that program. 
-There's this variable called `PATH` that your computer uses to locate programs. If you type `echo $PATH` into your terminal, you might see something like this:
-
-```bash
-(base) alex@Alexs-MacBook-Pro ~ % echo $PATH
-/Users/alex/opt/anaconda3/bin:/Users/alex/opt/anaconda3/condabin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/alex/Code Projects/eddypro-engine-master/bin/mac
-```
-
-This is just a list of directories. Your computer goes through this list, item by item, until it finds what it's looking for. 
-If I type `R` into my command line to run R, my computer will first look in `/usr/local/hdf5/bin`. If it doesn't find R there, it will move on to `/Applications/Snowpack/bin`, and so on.
-
-If I type `which R` into my command line, my computer will tell me where it found it:
-
-```bash
-(base) alex@Alexs-MacBook-Pro ~ % which R
-/usr/local/bin/R
-```
-
-If you look in the `PATH` variable above, you can see that `/usr/local/bin` in the 5th entry on that list. 
-If R were *also* installed in any of the preceeding directories, like maybe `/Users/alex/opt/anaconda3/bin`, then when we typed `which R` into the console, we would instead get
-
-```bash
-(base) alex@Alexs-MacBook-Pro ~ % which R
-/Users/alex/opt/anaconda3/bin/R
-```
-
-Note that anaconda inserted its *own* directory before anything else in `PATH`. 
-That way, when your computer looks for a program, anaconda forces it to look in the anaconda directory before giving up and looking somewhere else.
-
-That `/Users/alex/opt/anaconda3` directory is the "base" anaconda directory, and any programs we install using anaconda while in the base environment will go to `/Users/alex/opt/anaconda3/bin`. 
-To ask anaconda where it thinks it should look for packages, type `conda env list`:
-
-```bash
-(base) waldinian@Alexs-MacBook-Pro ~ % conda env list
-# conda environments:
-#
-base                  *  /Users/waldinian/opt/anaconda3
-```
-
-Note that this is the same directory that shows up first in your PATH.
-
-When we create new environments, those go in subdirectories of the base directory. 
-Say we make a new virtual environment called "rTREES_environment." 
-Then anaconda would create a directory called `/Users/alex/opt/anaconda3/envs/rTREES_environment`, and any programs installed from that environment would go into the directory `/Users/alex/opt/anaconda3/envs/rTREES_environment/bin`.
-When we enter that new environment, anaconda will change the PATH variable to direct everything first to that environment, instead of to the base environment:
-
-```bash
-(r_env) alex@Alexs-MacBook-Pro ~ % echo $PATH
-/Users/alex/opt/anaconda3/envs/r_env/bin:/Users/alex/opt/anaconda3/condabin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/alex/Code Projects/eddypro-engine-master/bin/mac
-```
-
+### For a technical aside about how anaconda actually does this, scroll to the bottom of the page.
 
 ## Create a new environment
 We're going to create a conda environment using R version 4.2.3. I'm sure other versions will also work, but that's the version my computer uses, and that version definitely works with rTREES.
@@ -145,7 +96,7 @@ Or to minimize the number of packages updated during conda update use
 
 ## Package Plan ##
 
-  environment location: /Users/alex/opt/anaconda3/envs/r_env
+  environment location: /Users/alex/opt/anaconda3/envs/rTREES_env
 
   added / updated specs:
     - r-base
@@ -197,7 +148,7 @@ Executing transaction: done
 #                                                                                         
 # To activate this environment, use                                                       
 #                                                                                         
-#     $ conda activate r_env                                                              
+#     $ conda activate rTREES_env                                                              
 #                                                                                         
 # To deactivate an active environment, use                                                
 #                                                                                         
@@ -263,7 +214,7 @@ If installing devtools or compiling rTREES failed, I might be able to help, but 
 
 1. open R: enter the command `R` in the terminal
 ```bash
-(r_env) waldinian@Alexs-MacBook-Pro ~ % R
+(rTREES_env) alex@Alexs-MacBook-Pro ~ % R
 
 R version 4.2.3 (2023-03-15) -- "Shortstop Beagle"
 Copyright (C) 2023 The R Foundation for Statistical Computing
@@ -359,12 +310,12 @@ You can look up available versions using `conda search r-packagename`
 
 You can also do this within R (running in the proper virtual environment) using the `install.packages` command.
 
-## Install RStudio
+## Install RStudio in your conda environment
 
-Install Rstudio in your conda environment: `conda install rstudio`. By now you should know that this will install RStudio in your environment directory, `~/opt/anaconda3/envs/rTREES_env`, separately from the version of RStudio that you (probably) use right now. 
+Run the command `conda install rstudio`. By now you should know that this will install RStudio in your environment directory, `~/opt/anaconda3/envs/rTREES_env`, separately from the version of RStudio that you (probably) use right now. 
 This means that you will now have multiple versions of RStudio installed on your computer. 
 Make sure to open the right one. 
-If you have the RStudio icon in your dock on your desktop, that icon will open a separate version not associated with conda. 
+If you have the RStudio icon in your dock on your desktop, that icon will open a separate version of RStudio not associated with conda, using a different R interpreter than the one conda uses (and probably different from the version in `/usr/local/bin` as well...see the technical aside below)
 It will not know where your rTREES is installed. 
 Instead, open rstudio from the terminal to get a version associated with the environment you're in:
 
@@ -422,3 +373,68 @@ I don't know what packages I installed in my environment: `conda list` in termin
 I installed the wrong package: `conda remove unwantedPackage` in terminal or `remove.packages(...)` in R.
 
 My version of R (`R --version`) is wrong, or is located somewhere weird, or none of my packages will load even though they show up in my environment: ask Alex for help.
+
+
+# Technical Aside: How is (base) different from my default shell outside of conda?
+When you run a program, for example when you run R from the command line, your computer has to know where to find that program. 
+There's this variable called `PATH` that your computer uses to locate programs. If you type `echo $PATH` into your terminal, you might see something like this:
+
+```bash
+(base) alex@Alexs-MacBook-Pro ~ % echo $PATH
+/Users/alex/opt/anaconda3/bin:/Users/alex/opt/anaconda3/condabin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/alex/Code Projects/eddypro-engine-master/bin/mac
+```
+
+This is just a list of directories. Your computer goes through this list, item by item, until it finds what it's looking for. 
+If I type `R` into my command line to run R, my computer will first look in `/usr/local/hdf5/bin`. If it doesn't find R there, it will move on to `/Applications/Snowpack/bin`, and so on.
+
+If I type `which R` into my command line, my computer will tell me where it found it:
+
+```bash
+(base) alex@Alexs-MacBook-Pro ~ % which R
+/usr/local/bin/R
+```
+
+If you look in the `PATH` variable above, you can see that `/usr/local/bin` in the 5th entry on that list. 
+If R were *also* installed in any of the preceeding directories, like maybe `/Users/alex/opt/anaconda3/bin`, then when we typed `which R` into the console, we would instead get
+
+```bash
+(base) alex@Alexs-MacBook-Pro ~ % which R
+/Users/alex/opt/anaconda3/bin/R
+```
+
+Note that anaconda inserted its *own* directory before anything else in `PATH`. 
+That way, when your computer looks for a program, anaconda forces it to look in the anaconda directory before giving up and looking somewhere else.
+
+That `/Users/alex/opt/anaconda3` directory is the "base" anaconda directory, and any programs we install using anaconda while in the base environment will go to `/Users/alex/opt/anaconda3/bin`. 
+To ask anaconda where it thinks it should look for packages, type `conda env list`:
+
+```bash
+(base) alex@Alexs-MacBook-Pro ~ % conda env list
+# conda environments:
+#
+base                  *  /Users/alex/opt/anaconda3
+```
+
+Note that this is the same directory that shows up first in your PATH.
+
+When we create new environments, those go in subdirectories of the base directory. 
+Say we make a new virtual environment called "rTREES_env" and activate it:
+
+```bash
+(base) alex@Alex-MacBook-Pro ~ % conda activate rTREES_env
+(rTREES_env) alex@Alexs-MacBook-Pro ~ % conda env list
+# conda environments:
+#
+base                     /Users/alex/opt/anaconda3
+rTREES_env            *  /Users/alex/opt/anaconda3/envs/rTREES_env
+```
+Then anaconda would create a directory called `/Users/alex/opt/anaconda3/envs/rTREES_env`, and any programs installed from that environment would go into the directory `/Users/alex/opt/anaconda3/envs/rTREES_env/bin`.
+When we enter that new environment, anaconda will change the PATH variable to direct everything first to that environment, instead of to the base environment:
+
+```bash
+(rTREES_env) alex@Alexs-MacBook-Pro ~ % echo $PATH
+/Users/alex/opt/anaconda3/envs/rTREES_env/bin:/Users/alex/opt/anaconda3/condabin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/alex/Code Projects/eddypro-engine-master/bin/mac
+```
+
+If a version of R is installed in the `/Users/alex/opt/anaconda3/envs/rTREES_env/bin` directory, then that version is what will run when we ask the terminal to open rTREES. 
+If we wanted to open the version outside of anaconda, the version in `/usr/local/bin`, then we would have to do that directly, by running the command `/usr/local/bin/R`. This circumvents the PATH variable and directly opens the version of R in that directory.
