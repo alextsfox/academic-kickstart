@@ -14,7 +14,7 @@ It also makes it easier for you to share your work with others, by giving you a 
 This tutorial uses anaconda to manage your environments, but there are other ways of doing this as well. I'm most familiar with anaconda, and I think it's the most common environment manager out there.
 If you get through this tutorial and you hated every second of it, you can check out the `renv` virtual environment manager exlusively for R. I've never used it, but it's worth looking into maybe: https://posit.co/blog/renv-project-environments-for-r/.
 
-If you're curious about how to use anaconda for other purposes, check out my Jupyter tutorial as well: {{< ref "jupyter-anaconda" >}}
+If you're curious about how to use anaconda for other purposes, check out my Jupyter tutorial as well: [Working in Python with Jupyter and Anaconda]({{< ref "jupyter-anaconda" >}})
 
 # R, rTREES, and RStudio
 
