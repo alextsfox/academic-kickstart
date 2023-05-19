@@ -7,6 +7,15 @@ tags:
     - Tutorials
 ---
 
+---
+title: "Installing rTREES in a virtual environment using conda"
+author: Alex Fox
+draft: false
+date: 2023-05-10
+tags:
+    - Tutorials
+---
+
 This tutorial is designed to help you run the TREES model in a "virtual environment," a quarantine chamber for software, so that it doesn't interfere with/get affected by your other R projects.
 
 If you just want to know what commands to run, you can skip to the "recap" section near the bottom.
@@ -42,7 +51,7 @@ There's a little more to keep track of now, since you need to know to activate e
 # Installing and Setting Up Anaconda
 
 ## Install Anaconda
-You can install anaconda from here: https://www.anaconda.com/. Download the graphical installer and follow the instructions.
+If you don't have anaconda installed already, you can install anaconda from here: https://www.anaconda.com/. Download the graphical installer and follow the instructions.
 
 This will install both the command line interface and the "anaconda navigator" GUI. I'm more familiar with the command line interface (which is also slightly faster), but the GUI provides (almost) all the same functionality. I won't explain the GUI here, but you should explore it on your own if you want. 
 Below, I'll explain how to interact with the command line interface: how to create environments, install R, and install certain packages.
@@ -53,7 +62,6 @@ Once anaconda has been installed, open up a terminal and type `conda --version`.
 This hopefully should show that you have the latest version (23.3.1 as of May 10, 2023). 
 If your version is much lower than this, update conda: `conda update -n base -c defaults conda` and indicate yes on any prompts. 
 It might take a few minutes to update. 
-You might have to close and reopen the terminal.
 Check the version again. It should have changed. 
 If the version is the same, something might be wrong with you anaconda installation. Let Alex know.
 
@@ -70,7 +78,15 @@ If any of this gives you an error, then anaconda might not be installed properly
 ## Create a new environment
 We're going to create a conda environment using R version 4.2.3. I'm sure other versions will also work, but that's the version my computer uses, and that version definitely works with rTREES.
 
-create a new virtual environment with the command`conda create --name choose_your_favorite_name r-base=4.2.3`. 
+First, we need to add the conda-forge channel. Conda-forge is a database of repositories that vastly expands the packages that anaconda can search for and download.
+To add conda-forge to the list of places anaconda looks for package downloads, run the following commands:
+
+```bash
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+```
+
+Now, create a new virtual environment with the command`conda create --name choose_your_favorite_name r-base=4.2.3`. 
 I'm going to call my environment `rTREES_env`: `conda create --name rTREES_env r-base=4.2.3`. 
 
 Note the "r-" prefix when we specified the R version. Conda assumes that everything is a python package. We can tell it to search R packages instead by specifying the "r-" prefix. "r-ggplot2", "r-dplyr", etc. This only applies when using conda, and has no effect when you're in Rstudio, for example.
@@ -332,30 +348,34 @@ Instead, open rstudio from the terminal to get a version associated with the env
 (rTREES_env) alex@Alexs-MacBook-Pro ~ % rstudio
 ```
 
-If rstudio asks you to update it, ignore the prompt and instead update it from the command line:
-
-```bash
-(rTREES_env) alex@Alexs-MacBook-Pro ~ % conda update rstudio
-```
+If rstudio asks you to update it, ignore the prompt. 
+The version of RStudio available on conda-forge is old. 
+There is a way to update it, but it requires some shenanigans that you can try to figure out if you want. 
+Personally, its not worth it for me.
 
 You can run all the same checks to make sure that RStudio is using the correct interpreter and libraries:
 
 * Check that calling `.libPaths()` points you to the anaconda environment
 * Check that rTREES works
 
-You can exit rstudio by going to the command line and hitting "ctrl+C". This will exit the program.
+You can exit RStudio by going to the command line and hitting "ctrl+C". This will exit the program. You can also exit it the normal way.
+
+### Important note about RStudio
+This installs RStudio in your anaconda environment. It does not overwrite your "normal" version of R or RStudio. Running RStudio your "normal" way will *not* open the version of RStudio that we run in Anaconda.
+For more information, see the technical aside at the bottom of the page.
 
 # Recap 
 
 Here's what we did
 
 1. We installed anaconda from the website
+2. We added the conda-forge channel `conda config --add channels conda-forge && conda config --set channel_priority strict`
 2. We created a virtual environment in conda: `conda create --name rTREES_env r-base=4.2.3`
 3. We entered that environment: `conda activate rTREES_env`
 4. We installed devtools: `conda install r-devtools`
 5. We downloaded the rTREES sourcecode and compiled it using devtools: `R -e "devtools::install_local('<path/to/rTREES.tar.gz>')"`
 6. We tested rTREES
-7. We installed additional packages.
+7. We installed additional packages for R.
 8. We installed RStudio in our rTREES environment using  `conda install rstudio`, then ran it using the `rstudio` command.
 
 Any time you want to set up another conda environment, follow steps 2.2-2.5. Of course, use a different environment name, select the version of R that you want, and install whatever R packages you need there.
@@ -449,7 +469,14 @@ And when we check the PATH variable now, we can see that it's been changed by an
 /Users/alex/opt/anaconda3/envs/rTREES_env/bin:/Users/alex/opt/anaconda3/condabin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/alex/Code Projects/eddypro-engine-master/bin/mac
 ```
 
-This is why it's so important to have anaconda installed correctly. If your anaconda install is broken, it might modify you PATH in an unpredictable way: things won't install the proper locations, programs will launch from the wrong directories, and your whole workflow will fall apart.
+This is why it's so important to have anaconda installed correctly. 
+If your anaconda install is broken, it might modify you PATH in an unpredictable way: things won't install the proper locations, programs will launch from the wrong directories, and your whole workflow will fall apart.
 
 However, the PATH variable doesn't control everything. 
-If we wanted to open the first version of R (`/usr/local/bin/R)`, we could still do that directly, by running the command `/usr/local/bin/R` instead of just `R`. 
+If we wanted to open the version of R not managed by anaconda (ie the one in `/usr/local/bin/R)`, we could still do that directly, by running the command `/usr/local/bin/R` instead of just `R`. 
+
+Another note: the PATH variable isn't universal. 
+It's reset every time you open a new terminal, so the changes that anaconda makes doesn't "infect" the rest of your computer.
+
+This is how anaconda deals with everything. 
+If a version of a program or package is installed in the anaconda environment you have active right now, then that is the version of the program or package that will open when you try to interact with it from the command line.
