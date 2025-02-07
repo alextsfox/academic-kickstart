@@ -10,8 +10,4 @@ tags:
     - PhD Research
 ---
 
-I'm studying how snowmelt energy budgets can be used to constrain uncertainty in surface energy flux measurements at Rocky Mountain Ameriflux sites.
-
-This is part of my PhD research.
-
-This page is incomplete. More to come later.
+Studying how imbalances in the surface energy budget at mountainous eddy covariance sites can help constrain springtime ecosystem water budgets.

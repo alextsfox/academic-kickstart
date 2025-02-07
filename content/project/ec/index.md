@@ -9,8 +9,4 @@ tags:
     - PhD Research
 ---
 
-I'm building a high-throughput data pipeline to process data from the US-CPk Ameriflux site.
-
-This is part of my PhD research.
-
-This page is incomplete. More to come later.
+Building a high-throughput data pipeline to process high frequency eddy covariance data from the US-CPk Ameriflux site.
