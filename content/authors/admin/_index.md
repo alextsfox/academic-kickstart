@@ -68,5 +68,5 @@ user_groups:
 - Visitors
 ---
 
-I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. 
+I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab.  AHAHAHAHAHHA
 I'm particularly interested in applying modern technology and informatics tools to study ecosystem fluxes and inform land management decisions. 
