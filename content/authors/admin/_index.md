@@ -21,16 +21,14 @@ organizations:
 bio: PhD student in Hydrologic Science. I study technology and models needed to measure ecosystem function, and how to scale between individual plants and whole ecosystem behavior.
 
 interests:
-- Hydrology
-- Sustainable Agriculture
-- Biophysics
+- Watershed and eco-hydrology
 - Ecoinformatics
-- Fluxin' Around
-- Falling off of bicycles
+- Data science
+- Bouldering, and falling off of bicycles
 
 education:
   courses:
-  - course: PhD student in Hydrology (current)
+  - course: PhD candidate in Hydrologic Science (current)
     institution: University of Wyoming
     # year: 2012
   - course: BA in Physics and Mathematics
@@ -51,6 +49,9 @@ social:
 - icon: github
   icon_pack: fab
   link: https://github.com/alextsfox
+-icon: orcid
+  icon_pack: ai
+  link: https://orcid.org/0009-0009-9775-4784
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
 - icon: cv
