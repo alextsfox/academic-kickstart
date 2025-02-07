@@ -68,5 +68,4 @@ user_groups:
 - Visitors
 ---
 
-I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab.
-I'm particularly interested in applying modern technology and informatics tools to study ecosystem fluxes and inform land management decisions. 
+I'm a Hydrologic Science PhD candidate at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. My work focuses on linking ecosystem functions like carbon cycling and water usage to ecological disturbances like fire, pathogens, and land management changes. I also enjoy working on side projects, so I'll post about those sometimes too.
