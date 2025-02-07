@@ -49,9 +49,9 @@ social:
 - icon: github
   icon_pack: fab
   link: https://github.com/alextsfox
--icon: orcid
-  icon_pack: ai
-  link: https://orcid.org/0009-0009-9775-4784
+# -icon: orcid
+#   icon_pack: ai
+#   link: https://orcid.org/0009-0009-9775-4784
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
 - icon: cv
@@ -68,5 +68,5 @@ user_groups:
 - Visitors
 ---
 
-I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab.  AHAHAHAHAHHA
+I am a PhD student at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab.
 I'm particularly interested in applying modern technology and informatics tools to study ecosystem fluxes and inform land management decisions. 
