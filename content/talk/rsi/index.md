@@ -9,8 +9,6 @@ tags:
     - Watersheds
 authors:
     - admin
-    - Jesus Gomez Velez
-    - Saubhagya Rathore
 ---
 
 Final presentation on my summer work at Oak Ridge National Laboratory, which looked at predicting the flow states of ephemeral headwater streams.
