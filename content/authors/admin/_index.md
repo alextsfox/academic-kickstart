@@ -18,7 +18,7 @@ organizations:
   url: ""
 
 # Short bio (displayed in user profile at end of posts)
-bio: PhD student in Hydrologic Science. I study technology and models needed to measure ecosystem function, and how to scale between individual plants and whole ecosystem behavior.
+bio: My work focuses on providing tools, data pipelines, and field instrumentation to study how landscape processes like energy and water cycles respond to environmental change.
 
 interests:
 - Watershed and eco-hydrology
@@ -28,7 +28,7 @@ interests:
 
 education:
   courses:
-  - course: PhD candidate in Hydrologic Science (current)
+  - course: PhD Candidate in Hydrologic Science
     institution: University of Wyoming
     # year: 2012
   - course: BA in Physics and Mathematics
@@ -49,6 +49,9 @@ social:
 - icon: github
   icon_pack: fab
   link: https://github.com/alextsfox
+- icon: linkedin
+  icon_pack: fab
+  link: www.linkedin.com/in/alextsfox
 # -icon: orcid
 #   icon_pack: ai
 #   link: https://orcid.org/0009-0009-9775-4784
@@ -59,7 +62,7 @@ social:
   link: files/cv.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
-email: "afox18@uwyo.edu"
+email: "alextsfox@gmail.com"
 
 # Organizational groups that you belong to (for People widget)
 #   Set this to `[]` or comment out if you are not using People widget.
@@ -68,4 +71,4 @@ user_groups:
 - Visitors
 ---
 
-I'm a Hydrologic Science PhD candidate at the University of Wyoming working in Professor Brent Ewers' Ecophysiology Lab. My work focuses on linking ecosystem functions like carbon cycling and water usage to ecological disturbances like fire, pathogens, and land management changes. I also enjoy working on side projects, so I'll post about those sometimes too.
+My work focuses on providing tools, data pipelines, and field instrumentation to study how landscape processes like energy and water cycles respond to environmental change. My current research at the University of Wyoming focuses on hydrologic modeling, soil-plant-atmosphere interactions, disturbance recovery in snow-dominated ecosystems, and developing pipelines for micrometeorological data processing. I also manage sensor networks to support long-term, high-resolution ecosystem monitoring efforts.

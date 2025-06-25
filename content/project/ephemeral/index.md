@@ -1,5 +1,5 @@
 ---
-title: "Snowmelt Energy Budget Imbalances"
+title: "Stress-Testing a lightweight stochastic model of river network dynamics under data-limited conditions"
 date: 2022-12-05T16:12:15-06:00
 draft: false
 projects:
