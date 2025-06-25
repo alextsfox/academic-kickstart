@@ -51,7 +51,7 @@ social:
   link: https://github.com/alextsfox
 - icon: linkedin
   icon_pack: fab
-  link: www.linkedin.com/in/alextsfox
+  link: https://www.linkedin.com/in/alextsfox
 # -icon: orcid
 #   icon_pack: ai
 #   link: https://orcid.org/0009-0009-9775-4784
