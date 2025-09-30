@@ -74,9 +74,13 @@ typedef struct {
 My thinking here is that this representation is pretty memory efficient. Each Vertex only needs 16 bytes, and adjacent cells will be stored relatively close together in memory, which should help with cache locality (though in reality, I don't think this ended up mattering much). All operations on the network are local: changing a flow direction only affects the cell itself, and we rarely need to do operations on the entire graph at once (in most circumstances). The downside is that it takes a little bit of work to traverse the graph, since we need to be able to convert between 2D grid corrdinates, the 1D array index, and the bitmask representation of the edges. 
 
 # PyOCN
-After compiling libocn to a shared library, I created a python wrapper for it using python's `ctypes` foreign function interface. Writing the PyOCN library came much more quickly. The main feature is the `OCN` class, which wraps a `FlowGrid` struct and provides methods for constructing it from various inputs, calling the optimization algorithm form libocn, and exporting the network to various formats.
+After compiling libocn to a shared library, I created a python wrapper for it using python's `ctypes` foreign function interface. Writing the PyOCN library came much more quickly. The main feature is the `OCN` class, which wraps a `FlowGrid` struct and provides methods for constructing it from various inputs, calling the optimization algorithm form libocn, and exporting the network to various formats. I think it works pretty well. It's got nice progress bars and everything.
+
 
 # Building and distributing
 This part was entirely new to me, and I definitely had to rely fairly heavily on the AI for this part. Wheels and builds and continuous integration and virtual testing environments and API keys and documentation....honestly this part felt like the most work. Turns out it's a lot more difficult to get something to run on everyone else's machine than it is to get it to run on just your own. The package is currently avaiable on GitHub (https://github.com/alextsfox/PyOCN/), where you can compile it from source. I'd like to eventually get it published on PyPI, but I'll need to finish my dissertation first.
+
+# Wrapping up
+Generating and running a 256x256 OCN for 3 million iterations takes about 2 minutes on my laptop, which if my memory serves me right, is much faster than I was able to get with OCNet, which took about 10 minutes for the same task, so that made me feel pretty good about myself. PyOCN is of course just a hobby project for now, so you should definitely use OCNet if you're doing more serious work and need the full set of features it provides. But if you want to play around with OCNs in Python and make some pretty graphs (quickly), PyOCN is a good option. If one of the two people who end up seeing this *do* end up using PyOCN for something, I'd love to hear about it! 
 
 Thanks for reading!
