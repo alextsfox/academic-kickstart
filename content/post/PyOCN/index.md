@@ -52,7 +52,7 @@ typedef struct {
 
 `edges` is a bitmask representing whether there is an edge connecting the cell to one of its 8 neighbors. For example, the following cell (in the middle) has the edges `0b00101001` (N, SE, and SW):
 
-```raw
+```c
 7  O  1
    |
 6  X  2
