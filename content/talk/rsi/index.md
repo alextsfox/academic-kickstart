@@ -1,9 +1,9 @@
 ---
-title: "Oak Ridge Internship Final Presentation"
-date: 2024-08-20T16:12:15-06:00
+title: "PyC2A package and binary file parsing"
+date: 2025-08-28T16:12:15-06:00
 draft: false
 projects:
-    - Watersheds
+    - 
 tags:
     - ORNL
     - Watersheds
