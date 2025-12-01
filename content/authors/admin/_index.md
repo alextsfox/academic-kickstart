@@ -10,7 +10,7 @@ authors:
 superuser: true
 
 # Role/position
-role: Hydrologic Science PhD Student
+role: Postdoctoral Researcher
 
 # Organizations/Affiliations
 organizations:
@@ -30,7 +30,7 @@ education:
   courses:
   - course: PhD Candidate in Hydrologic Science
     institution: University of Wyoming
-    # year: 2012
+    year: 2025
   - course: BA in Physics and Mathematics
     institution: Oberlin College
     year: 2018
