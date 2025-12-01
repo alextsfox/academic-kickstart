@@ -1,24 +1,15 @@
 ---
-title: "Linking Plant-Scale Processes to Ecosystem Function: PhD Proposal Defense Seminar"
-date: 2023-02-09T16:12:15-06:00
+title: "Data Driven Approaches for Modeling Hydrologic Fluxes: Dissertation Defense Seminar"
+date: 2025-11-30T16:12:15-06:00
 draft: false
 tags:
     - PhD Research
-    - Modeling
-    - Eddy Covariance
     - Talks
 projects:
     - Kernza
     - Snow
-    - Eddy Covariance Pipeline
 ---
 
+I defended my dissertation on November 10. Here's a recording of the public seminar I presented as part of my defnese.
 
-I gave my PhD proposal defense seminar today! I presented on my research for the weekly University of Wyoming Botany Department seminar series.
-Here you'll find a recording of my talk as well as a link to my slides.
-
-# Recording
-{{< youtube HnvJVOkvppg >}}
-
-# Slides
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTh5o5ghPuAaa1pkH852VTst-HpAcdcY-LyrGdyY0ayWV6iMd-M1K3Jr-wekuyxRA/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+{{< youtube r5vEey31zMc >}}
