@@ -27,15 +27,15 @@ $$
 P(\mathrm{accept}) = \min\left(1, \exp\left(-\frac{E_\mathrm{proposed} - E_\mathrm{current}}{T}\right)\right),
 $$
 
-where \(E\) is the network energy and \(T\) is the temperature. Energy is
+where $E$ is the network energy and $T$ is the temperature. Energy is
 
 $$
 E = \sum_i A_i^\gamma,
 $$
 
-with \(A_i\) the drained area at cell \(i\). \(\gamma\) is a free parameter that controls the "steepness" of the network. Low \(\gamma\) values produce more dendritic networks, and high values produce more parallel networks. An annealing schedule controls how \(T\) decays over time, typically given as an exponential decay.
+with $A_i$ the drained area at cell $i$. $\gamma$ is a free parameter that controls the "steepness" of the network. Low $\gamma$ values produce more dendritic networks, and high values produce more parallel networks. An annealing schedule controls how $T$ decays over time, typically given as an exponential decay.
 
-The algorithm runs until convergence (\(\Delta E / E < \varepsilon\)) or a fixed number of iterations. Temperature starts high and decays, allowing the network to settle into a low-energy structure.
+The algorithm runs until convergence ($\Delta E / E < \varepsilon$) or a fixed number of iterations. Temperature starts high and decays, allowing the network to settle into a low-energy structure.
 
 Finally, a DEM can be generated from the OCN by assigning slopes to each edge in the network based on the following equation:
 
@@ -43,9 +43,9 @@ $$
 \frac{z_i - z_{\mathrm{downstream}}}{\vert \vec x_i - \vec x_{\mathrm{downstream}} \vert} = k A_i^{\gamma - 1}
 $$
 
-where \(z_i\) and \(\vec x_i\) are the elevation and position of cell \(i\), respectively, \(z_{\mathrm{downstream}}\) and \(\vec x_{\mathrm{downstream}}\) are the elevation and position of the downstream cell, respectively, and \(k\) is a free parameter describing the vertical exaggeration of the landscape. \(z_i\) for the root cell is set to zero.
+where $z_i$ and $\vec x_i$ are the elevation and position of cell $i$, respectively, $z_{\mathrm{downstream}}$ and $\vec x_{\mathrm{downstream}}$ are the elevation and position of the downstream cell, respectively, and $k$ is a free parameter describing the vertical exaggeration of the landscape. $z_i$ for the root cell is set to zero.
 
-Below is an example of an OCN optimizing with \(\gamma = 0.375\), created with `PyOCN`. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary.
+Below is an example of an OCN optimizing with $\gamma = 0.375$, created with `PyOCN`. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary.
 
 <div align="center">
   <img src="generation.gif" alt="Optimizing an OCN">
@@ -102,11 +102,11 @@ As I mentioned earlier, `OCNet` uses a sparse adjacency matrix to represent the 
   <img src="duality.png" alt="Data structure comparison">
 </div>
 
-In `OCNet`, changing a cell's outflow involves updating the adjacency matrix to reflect the new connection. Cycles in the modified network are detected by attempting to perform an incremental topological sort of the graph: if the sort fails, a cycle exists. The algorithm then leverages a nice identify to compute the drained areas: \((\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1\). In this equation, \(\mathbf{W}\) is the adjacency matrix, \(\vec A\) is the vector of drained areas, and \(\vec 1\) is a vector of ones. Solving this linear system yields the drained areas for all cells efficiently. For an upper triangular adjacency matrix \(\mathbf{W}\), this can be solved with a forward-substitution algorithm, with has time complexity \(O(N)\). \(\mathbf{W}\) is permute to be upper triangular by permuting it according to the the topological sort order from the previous step. 
+In `OCNet`, changing a cell's outflow involves updating the adjacency matrix to reflect the new connection. Cycles in the modified network are detected by attempting to perform an incremental topological sort of the graph: if the sort fails, a cycle exists. The algorithm then leverages a nice identify to compute the drained areas: $(\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1$. In this equation, $\mathbf{W}$ is the adjacency matrix, $\vec A$ is the vector of drained areas, and $\vec 1$ is a vector of ones. Solving this linear system yields the drained areas for all cells efficiently. For an upper triangular adjacency matrix $\mathbf{W}$, this can be solved with a forward-substitution algorithm, with has time complexity $O(N)$. $\mathbf{W}$ is permute to be upper triangular by permuting it according to the the topological sort order from the previous step. 
 
 In contrast, the DAG approach that `libocn` takes requires explicitly traversing the graph to detect cycles and to update drained areas after modifying a flow path. Cycles are detecting by first traversing the graph downstream from the proposed new outflow cell to see if we reach the source cell. If we do, a cycle would be created, and the proposal is rejected. We then repeat this process, traversing downstream from the old outflow cell. To update the drained areas, we traverse the graph downstream from the old outflow cell, decrementing the drained areas of each visited cell by the drained area of the source cell. We then repeat this process, traversing downstream from the new outflow cell and incrementing the drained areas. 
 
-Both of these operations (the DAG approach and the adjacency matrix approach) have time complexity \(O(N)\) in the worst case, where \(N\) is the number of cells in the grid. The DAG approach that `libocn` uses is easier to follow, conceptually, but is messier to implement in practice. In contrast, the adjacency matrix approach that `OCNet` uses is far more elegant, but has several steps that are hard to follow at first. 
+Both of these operations (the DAG approach and the adjacency matrix approach) have time complexity $O(N)$ in the worst case, where $N$ is the number of cells in the grid. The DAG approach that `libocn` uses is easier to follow, conceptually, but is messier to implement in practice. In contrast, the adjacency matrix approach that `OCNet` uses is far more elegant, but has several steps that are hard to follow at first. 
 
 Here's a diagram comparing the two approaches.
 
