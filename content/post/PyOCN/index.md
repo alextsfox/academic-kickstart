@@ -12,7 +12,7 @@ tags:
 # Writing PyOCN
 I recently took a shot at building an actual software library, something I haven't really done before. I've made loads of scripts and one-off software projects for my own use or for research use, but never something meant to be distributed to the public. It turned into a substantial learning experience for me. I had to sharpen my C programming skills, learn how foreign function interfaces work, understand how software libraries are structured, and figure out how to distribute a Python package publicly.
 
-The result of my work is creating PyOCN: a collection of tools for working with Optimized Channel Networks (OCNs) based on Carraro et al. (2020), *Generation and application of river network analogues for use in ecology and evolution. Ecology and Evolution.* doi:10.1002/ece3.6479. It mirrors some of the functionality of the OCNet R package (https://lucarraro.github.io/OCNet/), but implemented in python and C, and with some substantial performance improvements.
+The result of my work is creating `PyOCN`: a collection of tools for working with Optimized Channel Networks (OCNs) inspired by the `OCNet` R package developed in Carraro et al. (2020), *Generation and application of river network analogues for use in ecology and evolution. Ecology and Evolution.* doi:10.1002/ece3.6479. It mirrors some of the functionality of the OCNet R package (https://lucarraro.github.io/OCNet/), but implemented in python and C, and with some substantial performance improvements.
 
 I first used OCNs in 2024 during a project as an intern at Oak Ridge National Lab. I liked the elegance of the algorithm but found the OCNet R package limiting: many hydroligists prefer to work in python over R, and the OCNet R package had some substantial performance and dependency issues. I tried rewriting the algorithm in Python, but it was painfully slow: roughly 30 minutes to generate a 64×64 grid that OCNet handles in seconds. Digging through OCNet revealed that it relies heavily on SPArse Matrix (SPAM), a Fortran library, so my pure-Python rewrite was doomed. I tried again in Julia, still without the performance I wanted. Eventually I shelved the project. A few months later, while procrastinating on my PhD thesis, I decided to give it one more shot, this time implementing the entire backend in C and wrapping it with Python bindings.
 
@@ -33,9 +33,9 @@ $$
 E = \sum_i A_i^\gamma,
 $$
 
-with $A_i$ the drained area at cell $i$. $\gamma$ is a free parameter that controls the "steepness" of the network. Low $\gamma$ values produce more dendritic networks, and high values produce more parallel networks. An annealing schedule controls how $T$ decays over time, typically given as an exponential decay.
+with $A_i$ the drained area at cell $i$. $\gamma$ is a free parameter that controls the "steepness" of the network. Low $\gamma$ values produce more dendritic networks, and high values produce more parallel networks. An annealing schedule is freely chosen, and controls how $T$ decays over time, typically given as an exponential decay.
 
-The algorithm runs until convergence ($\Delta E / E < \varepsilon$) or a fixed number of iterations. Temperature starts high and decays, allowing the network to settle into a low-energy structure.
+The algorithm runs until convergence ($\Delta E / E < \varepsilon$) or a fixed number of iterations is reached. Temperature starts high and decays, allowing the network to first explore a range of possible states before settling into a low-energy structure.
 
 Finally, a DEM can be generated from the OCN by assigning slopes to each edge in the network based on the following equation:
 
@@ -52,6 +52,11 @@ Below is an example of an OCN optimizing with $\gamma = 0.375$, created with `Py
 </div>
 
 OCNs make for a good first C project: the algorithm is conceptually straightforward but requires careful handling of a nontrivial data structure (a spanning tree over a fixed grid with 0 crossed edges). And because it’s not vectorizable, I can't just shove my code into a bunch of NumPy arrays and expect a significant speed-up.
+
+More information on OCNs can be found in:
+
+Rinaldo, A., Rigon, R., Banavar, J.R., Maritan, A., Rodriguez-Iturbe, I. (2014). *Evolution and selection of river networks: Statics, dynamics, and complexity*. PNAS 111(7), pp 2417-2424. doi:10.1073/pnas.1322700111
+
 
 # libocn
 OCNet represents the flow network using a sparse adjacency matrix, which is implemented in the SPAM Fortran library. I took a different approach: representing the grid directly as a directed acyclic graph (DAG) in a C library I created called `libocn`. Each cell in the grid is a `Vertex` structure:
@@ -102,16 +107,20 @@ As I mentioned earlier, `OCNet` uses a sparse adjacency matrix to represent the 
   <img src="duality.png" alt="Data structure comparison">
 </div>
 
-In `OCNet`, changing a cell's outflow involves updating the adjacency matrix to reflect the new connection. Cycles in the modified network are detected by attempting to perform an incremental topological sort of the graph: if the sort fails, a cycle exists. The algorithm then leverages a nice identify to compute the drained areas: $(\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1$. In this equation, $\mathbf{W}$ is the adjacency matrix, $\vec A$ is the vector of drained areas, and $\vec 1$ is a vector of ones. Solving this linear system yields the drained areas for all cells efficiently. For an upper triangular adjacency matrix $\mathbf{W}$, this can be solved with a forward-substitution algorithm, with has time complexity $O(N)$. $\mathbf{W}$ is permute to be upper triangular by permuting it according to the the topological sort order from the previous step. 
+In `OCNet`, changing a cell's outflow involves updating the adjacency matrix to reflect the new connection. Cycles in the modified network are detected by attempting to perform an incremental topological sort of the graph: if the sort fails, a cycle exists. The algorithm then leverages a nice identity to compute the drained areas: $(\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1$. In this equation, $\mathbf{W}$ is the adjacency matrix, $\vec A$ is the vector of drained areas, and $\vec 1$ is a vector of ones. Solving this linear system for $\vec A$ yields the drained areas for all cells. For an upper triangular adjacency matrix $\mathbf{W}$, this can be solved with a forward-substitution algorithm, with has time complexity $O(N)$. $\mathbf{W}$ is made to be upper triangular by permuting it according to the the topological sort order from the previous step. 
 
 In contrast, the DAG approach that `libocn` takes requires explicitly traversing the graph to detect cycles and to update drained areas after modifying a flow path. Cycles are detecting by first traversing the graph downstream from the proposed new outflow cell to see if we reach the source cell. If we do, a cycle would be created, and the proposal is rejected. We then repeat this process, traversing downstream from the old outflow cell. To update the drained areas, we traverse the graph downstream from the old outflow cell, decrementing the drained areas of each visited cell by the drained area of the source cell. We then repeat this process, traversing downstream from the new outflow cell and incrementing the drained areas. 
-
-Both of these operations (the DAG approach and the adjacency matrix approach) have time complexity $O(N)$ in the worst case, where $N$ is the number of cells in the grid. The DAG approach that `libocn` uses is easier to follow, conceptually, but is messier to implement in practice. In contrast, the adjacency matrix approach that `OCNet` uses is far more elegant, but has several steps that are hard to follow at first. 
 
 Here's a diagram comparing the two approaches.
 
 <div align="center">
   <img src="algos.png" alt="OCNet vs PyOCN">
+</div>
+
+Both of these operations (the DAG approach and the adjacency matrix approach) shuold have time complexity $O(N)$ in the worst case, where $N$ is the number of cells in the grid. The DAG approach that `libocn` uses is easier to follow, conceptually, but is messier to implement in practice. In contrast, the adjacency matrix approach that `OCNet` uses is far more elegant, but has several steps that are hard to follow at first. Additionally, the adjacency matrix approach must touch every cell in the grid to detect cycles and update drained areas, whereas the DAG approach can often short-circuit these operations if the affected area is small. Whether this has a meaningful performance impact depends on the structure of the network and the optimization parameters. I can't directly compare performance between the two approaches since `OCNet` is implemented in R and Fortran, while `PyOCN` is implemented in Python and C. Additionally, `OCNet` only delegates out the most basic backend stuff (like performing the raw sparse matrix operations) to Fortran, whereas `PyOCN` does everything except for the interface in `C`. In my tests (on an M1 Macbook Pro with 16GB of memory), `PyOCN` is consistently about 40x faster than `OCNet`. However, they both seem to scale roughly as $O(N^2)$ in practice. Eyeballing it, the equation seems to be roughly $t\approx 0.001 N^2$ for `PyOCN` and $t \approx 0.02 N^2$ for `OCNet` on my machine, depending on the optimization parameters chosen. This is notably not the $O(N)$ that I expected, but my calculation of the complexity didn't acount for the cost associated with cache effects, memory access, or the stochastic nature of the algorithm causing more failed iterations for larger grid sizes. 
+
+<div align="center">
+  <img src="time_compare.png" alt="Scaling performance">
 </div>
 
 # Building and distributing
@@ -127,6 +136,8 @@ Documentation is here: https://pyocn.readthedocs.io
 Currently, `PyOCN` implements the DAG version of the OCN algorithm. I would like to try implementing the adjacency matrix version as well, to compare performance and code complexity. Right now, `PyOCN` also has some basic export, visualization, and analysis tools: you can export the OCN as a raster DEM or as a graph in `networkx`, but I would like to see some more advanced analysis tools added: stream order calculations, hydrologic unit delineation, and watershed extraction are high on my list.
 
 # Wrapping up
+This project was a huge success for me: I learned a lot about C programming, Python packaging, and software design, and I created an alternative implementation of the OCN algorithm that is an order of magnitude faster than the existing library.
+
 `PyOCN` is still a hobby project. If you need well-tested academic software, `OCNet` is likely the more stable choice. But if you want a fast, Python-native way to play with OCNs and simulated river networks, `PyOCN` does the job well (and with love).
 
 If you end up using it for something, I’d genuinely like to hear about it.
