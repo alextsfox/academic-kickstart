@@ -45,7 +45,7 @@ $$
 
 where $z_i$ and $\vec x_i$ are the elevation and position of cell $i$, respectively, $z_{\mathrm{downstream}}$ and $\vec x_{\mathrm{downstream}}$ are the elevation and position of the downstream cell, respectively, and $k$ is a free parameter describing the vertical exaggeration of the landscape. $z_i$ for the root cell is set to zero.
 
-Below is an example of an OCN optimizing with $\gamma = 0.375$, created with `PyOCN`. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary.
+Below is an example of an OCN optimizing with $\gamma = 0.375$, created with `PyOCN`. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary. I think it's quite beautiful, like an amoeba squirming around under a microscope.
 
 <div align="center">
   <img src="generation.gif" alt="Optimizing an OCN">
