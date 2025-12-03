@@ -122,8 +122,10 @@ The Python side centers on the `OCN` class, which wraps a `FlowGrid` structure a
 ```python
 import PyOCN as po
 import matplotlib.pyplot as plt
-# Create an OCN on a 64x64 grid with gamma=0.5, with a periodic boundary condition and "hip-roof" initial structure
-ocn = po.OCN.from_net_type("H", dims=(64, 64), gamma=0.5, wrap=True, random_state=8472)
+# Create an OCN on a 64x64 grid with gamma=0.5, 
+# with a periodic boundary condition and "hip-roof" initial structure
+ocn = po.OCN.from_net_type("H", dims=(64, 64), 
+    gamma=0.5, wrap=True, random_state=8472)
 # optimize the OCN
 ocn.fit()
 # Visualize the resulting DEM
