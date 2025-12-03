@@ -134,7 +134,7 @@ res.elevation.plot(cmap="terrain")
 plt.show()
 ```
 
-</div>
+</div align="center">
     <img src="example.png" alt="Output DEM from PyOCN example code">
 </div>
 
