@@ -142,10 +142,6 @@ plt.show()
 # Performance comparison
 Both of these operations (the DAG approach and the adjacency matrix approach) should have time complexity $O(N)$ in the worst case, where $N$ is the number of cells in the grid. I can't directly compare performance between the two different algorithms since `OCNet` is implemented in R and Fortran, while `PyOCN` is implemented in Python and C. Additionally, `OCNet` only delegates out the most basic backend stuff (like performing the raw sparse matrix operations) to Fortran, whereas `PyOCN` does everything except for the interface in `C`. However, in my tests, my `PyOCN` is much faster than `OCNet`. Whether is because my algorithm is faster or just because R is relatively slow is impossible to say. On an M1 Macbook Pro, `PyOCN` is consistently about ~20-60x faster than `OCNet`. They both seem to scale roughly as $O(N)$ in practice, which aligns with my rough complexity computation.
 
-<!-- <div align="center">
-  <img src="time_compare.png" alt="Scaling performance of PyOCN vs OCNet. The shaded regions indicate the standard deviation across 5 ensemble runs.">
-</div> -->
-
 # Building and distributing
 Distributing a Python package with a C backend is not trivial. I had to learn the Python build chain, including how to get `setup.py` to compile the C code automatically. I didn’t want to distribute wheels (a pre-compiled binary Python package) for every platform, and I didn’t want users compiling the code manually, so the `setup.py` route made the most sense.
 
