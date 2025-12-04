@@ -37,9 +37,11 @@ Over time, streams will find paths that minimize energy expenditure. This might 
 OCNs are models of river network structure based on the principle of optimality: river networks evolve to minimize the total energy expenditure of transporting water through the network. A stream with high erosional power will meet resistance from the landscape as it incises its channel. In the case of OCNs, erosional power of a single segment $i$ of a river network is assumed to depend on (1) mean discharge ($Q_i$) and (2) channel slope ($s_i$). Both mean discharge and channel slope are assumed to depend on drained area ($A_i$):
 
 $$
-Q_i \propto A_i \\
-s_i \propto A_i^{\gamma - 1}\\
-E_i \propto Q_i s_i \propto A_i^\gamma \\
+\begin{align}  
+Q_i \propto& A_i \\
+s_i \propto& A_i^{\gamma - 1}\\
+E_i \propto& Q_i s_i \propto A_i^\gamma \\
+\end{align}
 $$
 
 The energy dissapated by the entire river network in aggregate is then given by summing over all segments:
