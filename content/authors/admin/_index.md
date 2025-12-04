@@ -28,7 +28,7 @@ interests:
 
 education:
   courses:
-  - course: PhD Candidate in Hydrologic Science
+  - course: PhD in Hydrologic Science
     institution: University of Wyoming
     year: 2025
   - course: BA in Physics and Mathematics
