@@ -1,6 +1,6 @@
 ---
 title: "Converting Campbell Scientific Binary Files to ASCII"
-date: 2026-02-10T16:12:15-06:00
+date: 2026-02-09T16:12:15-06:00
 draft: false
 projects:
     - Programming
