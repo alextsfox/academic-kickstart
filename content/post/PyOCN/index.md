@@ -66,17 +66,26 @@ To illustrate this, consider the elevation map of the following two extreme OCNs
 
 The algorithm for generating an OCN follows a myopic search pattern, that mimics how river networks evolve over time through local erosion events. The basic steps of the algorithm are as follows:
 
-1. Initialize a directed acyclic graph with no crossing that spans all of the cells in a 2D grid. Each cell drains into one of its 8 immediate neighbors (except the root, which has not outlet). This represents the initial structure of the river network, before optimizing.
+1. Initialize a directed acyclic graph with no crossings that forms a spanning tree over all of the cells in a 2D grid. Each cell drains into one of its 8 immediate neighbors (except the root, which has not outlet). This represents the initial structure of the river network, before optimizing.
 2. Choose a random cell in the grid. Propose changing that cell’s outflow to point towards a random, different neighbor (assuming it doesn't break the graph structure). This represents a possible local erosion event.
-3. Accept or reject the proposed change based on the Metropolis criterion, before going back to step 2. The Metropolis criterion accepts changes that lower the total energy of the network, and sometimes accepts changes that increase the total energy, to allow the network to explore a wider range of configurations. The probability of accepting a proposed change is given by:
+3. Accept or reject the proposed change based on an acceptance probability. Changes that lower the total energy are always accepted, and changes that raise the total energy are conditionally rejected, based on a "temperature" parameter:
 
 $$
-P(\mathrm{accept}) = \min\left(1, \exp\left(-\frac{E_\mathrm{proposed} - E_\mathrm{current}}{T}\right)\right),
+P(\mathrm{accept}) = \min\left(1, \exp\left(-\frac{E_\mathrm{proposed} - E_\mathrm{current}}{T}\right)\right).
 $$
 
-where $E$ is the total network energy and $T$ is a free parameter called "temperature." Note that a change is always accepted if it lowers the networks energy. Temperature is typically chosen by specifying an "annealing schedule," which provides $T$ as a function of timetime, typically given as an exponential decay. $T$ starts high to allow the network to explore a wide range of possible configurations, and decays over time to make the optimization algorithm more greedy as it settles into a low-energy state. The algorithm runs until convergence ($\Delta E / E < \varepsilon$) or a fixed number of iterations is reached. 
+$E$ is the total network energy and $T$ is temperature. The lower the temperature (or the greater the increase in energy), the less likely the change is to be accepted. By conditionally accepting sub-optimal changes, we give the algorithm the chance to explore a wider range of possible network configurations. This is similar to the Metropolis Criterion used in other probablilistic optimization algorithms. Temperature is chosen as a free parameter, and is typically made to exponentially decay over time (iterations) based on an "annealing schedule." $T$ starts high to allow the network to explore a wide range of possible configurations, and decreases as the number of iterations increases to make the optimization algorithm more greedy and settle on a low-energy state. 
 
-Below is an example of running the optimization algorithm with $\gamma = 0.375$. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary. I think it's quite beautiful, like an amoeba squirming around under a microscope.
+4. Repeat steps 2 and 3 until convergence ($\Delta E / E < \varepsilon$) is reached or a fixed number of iterations is reached. 
+
+
+Below is a .gif showing a conceptual example of how the OCN optimization algorithm works over time. The initial network has a simple parallel structure. Over time, local erosion events cause the network to reconfigure itself into a more optimal, dendritic structure.
+
+<div align="center">
+  <img src="ocn_concept.gif" alt="Conceptual example of OCN optimization">
+</div>
+
+Below is an example of running the optimization algorithm with $\gamma = 0.375$ for several million iterations. Blue/green colors indicate low elevation, and brown/white colors indicate high elevation. Since this OCN was optimized with a periodic boundary condition, the boundary of the watershed can change over time as flowpaths "jump" across the the boundary. I think it's quite beautiful, like an amoeba squirming around under a microscope.
 
 <div align="center">
   <img src="generation.gif" alt="Optimizing an OCN">
@@ -86,14 +95,36 @@ More information on OCNs and network scaling dynamics can be found in:
 
 Rinaldo, A., Rigon, R., Banavar, J.R., Maritan, A., Rodriguez-Iturbe, I. (2014). *Evolution and selection of river networks: Statics, dynamics, and complexity*. PNAS 111(7), pp 2417-2424. doi:10.1073/pnas.1322700111
 
-# Algorithm implementation
+# Algorithm implementations
+Aside from the high-level description of the OCN algorithm given above, there are other considerations that must be made as well:
+
+* How should the network be represented in memory?
+* How should we check the validity of a network after changing it? (i.e. does the network contain cycles or edge crossings?)
+* How should we update the drained areas of each vertex in the network after making a change?
+* How should we compute the energy of the network after making a change?
+* How should we handle undoing changes that are rejected?
+
 The most popular existing implementation of the OCN algorithm is the `OCNet` R package developed by Carraro et al. (2020). This implementation uses a matrix representation of the flow network. The implementation is rather elegant, but I found it difficult to follow at first. Therefore I'll talk about my implementation (in `PyOCN`) of the OCN algorithm, and then I'll compare it to the `OCNet` approach. 
 
 ## The PyOCN implementation
-In `PyOCN`, I represent the flow network directly as a directed acyclic graph (DAG), represented in code as an array of nodes with attributes indicating which neighbors they connect to and drain towards. Rerouting a cell's outflow (step 2 of the algorithm) involves pointing a node's outflow to a different neighbor (and updating the old and new neighbors' inflow edges accordingly). This change may introduce cycles in the graph, which are invalid in a river network. To check for cycles, `PyOCN` follows the downstream path from both the new and old downstream neighbors of the target node. If it ever encounters a single node twice, it knows that a cycle was created, and it goes back to step 1 (after undoing the re-route). The re-route changes the drained areas of all cells downstream of the source cell, which must be updated by traversing the graph again to reflect the new flow path. The energy of the modified network can then be computed by determining how the change in drained areas affects the total energy, and the proposal can be accepted or rejected based on the Metropolis criterion (step 3 of the algorithm).
+I will go more in-depth into the specifics of my implementation in `PyOCN`, since it's less documented elsewhere, but here is an overview.
+
+In `PyOCN`, the network is represented directly as a directed acyclic graph (DAG), encoded as an array of vertices, where each vertex has attributes indicating which neighbors it connect to which vertex it drains towards. Rerouting the outflow of a given vertex involves changin it and it's neighbors' attributes to reflect any desired new connections (and the loss of any old connections). 
+
+To check for cycles after making a change to the network, `PyOCN` iteratively traces a path downstream from both the new and old downstream neighbors of the affected vertex. If the same vertex is ever encountered twice, we know that a cycle was created.
+
+We must also check for crossed edges. In grid where edges only connect adjacent vertices, crossed edges can occur if two adjacent vertices drain diagonally (e.g. a vertex at positiong `x=5`, `y=5` drains SE into `x=6`, `y=6`, while the vertex at `x=6`, `y=5` drains SW into `x=5`, `y=6`). To check for crossed edges, we first check that the proposed new outflow direction is diagonal. If it is, we then check the outflow direction of the two adjacent vertices in the orthogonal direction. If either of those vertices have outflows that connect diagonally in a "shared direction" with the proposed diagonal outflow, then these is a crossed edge (e.g. if the proposed edge drains SE, we check the cell to the S. If it has a NE edge, then a cross is detected. Likewise if the nieghbor to the E has a SW edge, then a cross is detected). 
+
+If either a cycle or a cross is detected, then we undo the proposed change and try again until a valid change is found. Once a change is found to be valid, we must then update the drained area of each vertex in the network. A re-route does not change the drained area of all the vertices in the network, only those downstream of the source vertex. Therefore, we can efficiently update drained areas by traversing the graph starting from the source vertex and propagating changes downstream. If a change is made close to the outlet, only a few vertices need to be updated, even if the network is very large. We can update the energy of the network in the same way. This change is then accepted or rejected based on the Metropolis criterion (step 3 of the algorithm). If the change is rejected, we must undo everything: first by undoing are area and energy updates, and then by restoring the original outflow of the affected vertex and its neighbors. This concludes one iteration of the algorithm.
+
+A typical number of iterations for convergence is on the order of `40N`, where `N` is the number of vertices in the network.
 
 ## The OCNet implementation
-The implementation in `OCNet` is quite different, relying on sparse matrix operations to represent and manipulate the flow network. In `OCNet`, the flow network is represented as a sparse adjacency matrix $\mathbf{W}$, where each entry $W_{ij}$ indicates whether cell $i$ drains into cell $j$ ($\mathbf{W}_{ij}$ = 1) or not ($\mathbf{W}_{ij}$ = 0). Rerouting a cell's outflow involves updating the adjacency matrix to reflect the new connection (and the loss of the old connection). The modified adjacency matrix is then checked for validity by performing an incremental topological sort to detect cycles. A topological sort is an ordering of the nodes in a directed graph such that for every directed edge from node $i$ to node $j$, $i$ comes before $j$ in the ordering. If a cycle exists in the graph, then the sort will fail, and the re-route will have to be un-done. The topological sort also comes in handy for computing drained areas efficiently by leveraging an identity of the adjacency matrix: $(\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1$, where $\vec A$ is the vector of drained areas, and $\vec 1$ is a vector of ones. This linear system can be solved for $\vec A$ to yield the drained areas for all cells. This can be done very efficiently (in $O(n)$ time) if $\mathbf{W}$ is upper triangular. Luckily, the topological sort that was done to verify the integrity of the graph provides a permutation of the nodes $\mathbf{P}$ such that the permuated adjacency matrix $\mathbf{PWP}^T$ is upper triangular. Finally, the energy of the modified network can be computed using the updated drained areas, and the proposal can be accepted or rejected based on the Metropolis criterion (step 3 of the algorithm).
+The implementation in `OCNet` is more abstract. In `OCNet`, the network is represented as a sparse adjacency matrix $\mathbf{W}$, where each entry $W_{ij}$ indicates whether cell $i$ drains into cell $j$ ($\mathbf{W}_{ij}$ = 1) or not ($\mathbf{W}_{ij}$ = 0). To reroute a vertex's outflow, the adjacency matrix is updated manually to reflect any new connections (and the loss of any old connections). 
+
+To check for crossed edges, `OCNet` used the same logic as `PyOCN`. To check for cycles, however, it performs an incremental topological sort on the modified adjacency matrix. A topological sort is an ordering of the vertices in a directed graph such that for every directed edge from vertex $i$ to vertex $j$, $i$ comes before $j$ in the ordering. This places "headwater" vertices before "downstream" vertices. If a cycle exists in the graph, then a topological sort is impossible. Therefore, by attempting a topological sort on the modified adjacency matrix, `OCNet` can efficiently check for cycles. The clever part of this approach is that this topological sorting can be used to speed up the next step in the algorithm: updating drained areas.
+
+To update the drained areas of each vertex in the network, `OCNet` leverages an identity of the adjacency matrix: $(\mathbb{I} - \mathbf{W}^T)\vec A = \vec 1$, where $\vec A$ is the vector of drained areas and $\vec 1$ is a vector of ones. This linear system can be solved for $\vec A$ to yield the drained areas for all cells. To solve this system efficiently, `OCNet` uses the topological ordering obtained from the previous step: the topological ordering permutes the adjacency matrix to be upper triangular. This allows for the linear system to be solved in $O(n)$ time using back-substitution. Finally, the energy of the modified network can be computed using the updated drained areas, and the proposal can be accepted or rejected based on the Metropolis criterion (step 3 of the algorithm). 
 
 ## Comparing the two implementations
 Here's a diagram comparing the structure of the two approaches. On the left is the DAG approach used in `PyOCN`, and on the right is the adjacency matrix approach used in `OCNet`.
@@ -108,26 +139,29 @@ This diagram roughly shows how the two implementation differ.
   <img src="algos.png" alt="OCNet vs PyOCN">
 </div>
 
-I find the implementation of `PyOCN` more approachable, but it does require more bookkeeping and code to handle traversing the graph and updating drained areas. The `OCNet` approach is more elegant and easier to code, but it took me a while to understand how the various pieces fit together. Regardless, both implementations yield identical results, and the optimization time should scale roughly linearly with the number of cells in the grid. I suspect that the `PyOCN` implementation is faster in practice, since it can be easily optimized to only consider the relevant parts of the graph each iteration, whereas the `OCNet` implementation has to perform global sparse matrix operations each iteration.
+I find the implementation of `PyOCN` more approachable, but it does require more bookkeeping and code to handle traversing the graph and updating drained areas. The `OCNet` approach is certainly more elegant and easier to code (with access to an efficient sparse matrix library like SPAM), but it took me a while to understand how the various pieces fit together. 
 
-# libocn
+Additionally, I believe that the implementation in `PyOCN` has the potential to be much faster than the `OCNet` one, especially for large networks. In `PyOCN`, updating drained areas and energies only requires visiting the affected downstream vertices, which can be a small fraction of the total network. In `OCNet`, however, updating drained areas requires solving a global linear system each iteration, which involves visiting all vertices in the network. While both approaches have a worst-case time complexity of $O(N)$ per iteration, in actuality that $N$ can be much smaller in `PyOCN`, especially if changes are made close to the outlet.
+
+# PyOCN in code
 OCNs make for a good first C project: the algorithm is conceptually straightforward but requires careful handling of a nontrivial data structure (a spanning tree over a fixed grid with 0 crossed edges). And because it’s not vectorizable, I can't just shove my code into a bunch of NumPy arrays and expect a significant speed-up.
 
 `OCNet` splits the implementation of the OCN algorithm between R and Fortran: R handles the logic, main optimization loop, and user interface, while Fortran handles the computationally intensive sparse matrix manipulations. In `PyOCN`, I decided to implement everything in C (except for the user interface), which I compiled into a shared library, `libocn`, that could be called from Python.
 
-As I mentioned in the previous section, in `libocn`, I represent the flow network as a DAG. This is constructed as a flat array of `Vertex` structs. Each `Vertex` struct represents a single cell in the grid, and contains fields for the drained area, outflow direction, and a bitmask indicating which of its 8 neighbors it has edges to:
+As I mentioned in the previous section, in `libocn`, I represent the flow network as a DAG encoded as a flat array of `Vertex` structs. Each `Vertex` represents a single grid cell and contains fields for drained area, outflow direction, and a bitmask indicating which of its 8 neighbors it has connections to:
 
 ```c
 typedef struct {
     double area;    // Cumulative drained area
-    char outflow;   // Direction of outflow (0-7)
     char edges;     // Bitmask of connected neighbors
+    char outflow_direction; // Direction of outflow (0, 1, 2, 4, 8, ..., 64)
+    int outflow_index;   // Index of the outflow neighbor (0 through N-1)
+    bool is_visited;    // Helper field for traversals
 } Vertex;
 ```
+The `edges` field is an 8-bit bitmask where each bit indicates whether the vertex has a connection to that neighbor: bit 0 for N, bit 1 for NE, etc. For example, if `edges = 00010011` (19), then that vertex connnects to its N, NE, and S neighbors. The `outflow_direction` field indices which neighbor the vertex drains into, encoded as a power of two (1 for N, 2 for NE, 4 for E, etc). To find which edge the vertex uses as an outflow, we can perform the bitwise operation `(1 << outflow_direction) & edges == 0` to check which neighbor it drains into. This encoding allows for very compact storage of the network structure, and the bitwise operations are very fast to compute. Compared to a more conventional method of storing the neighbor indices directly (which would require 4 bytes per neighbor, adding up to 32 bytes per vertex), this approach uses only 1 byte to store the `edges` bitmask and 1 byte to store the `outflow_direction`, for a total of 2 bytes per vertex. However, each vertex must also stores it drained area, which takes up 8 bytes (a double-precision float). Due to structure padding, this that the total size of each `Vertex` struct is 16 bytes (8 + 1 + 1 + 6 bytes of padding). To not waste the 4 bytes of padding, I added in the `outflow_index` field, which stores the index of the outflow neighbor in a flat array of vertices without sacrificing memory. I also added the `is_visited` field, which is used to check for cycles. This field is useful for traversing the graph efficiently without having to recompute neighbor indices from the bitmask each time. 
 
-The bitmask encodes which of the 8 neighbors have edges. For example, a cell with edges in the cardinal directions N, SE, and SW has mask `00101001` (where bit 0 is N, 3 is SE, and 5 is SW):
-
-A `FlowGrid` stores an array of `Vertex` structs, along with metadata about the grid as a whole:
+The full grid of vertices is stored in a `FlowGrid` structure:
 
 ```c
 typedef struct {
@@ -138,7 +172,10 @@ typedef struct {
 } FlowGrid;
 ```
 
-The `*grid` field is a pointer to an array of `Vertex` structs, stored as a 1d array in row-major order of shape `(nrows * ncols)`. I experimented with block-tiling instead of row-major ordering to improve cache locality, but the indexing overhead seemed to outweigh the benefits, and added complexity.
+The `grid` field points to a flat array of `Vertex` structs of size `nrows * ncols`, which is indexed in row-major order. I tested several block-tiling layouts as a way to further improve cache locality, but it didn't seem to provide any meaningful benefits, at the cost of much more difficult debugging.
+
+## CHECKING FOR CYCLES
+## COMPUTING UPDATES AREAS AND ENERGIES
 
 # PyOCN
 I compiled the backend into a shared library, `libocn.so`, and interfaced with it using Python’s `ctypes` library to create the `PyOCN` package. Apparently, I could have actually built `libocn` as a native Python extension module using the `PyModule` C API, which would have allowed for tighter integration with Python. However, that approach requires a lot more boilerplate code to handle converting between Python objects and C structs than I was willing to write for this small project, and likely limits the compatability of `libocn` with languages other than Python. Instead, `ctypes` let me redefine the C header files in Python so it could navigate `libocn` as a foreign library, and then I just built Python functions and classes that wrapped the raw C functions in a user-friendly interface.
