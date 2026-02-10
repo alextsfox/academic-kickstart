@@ -7,15 +7,6 @@ tags:
     - Tutorials
 ---
 
----
-title: "Installing rTREES in a virtual environment using conda"
-author: Alex Fox
-draft: false
-date: 2023-05-10
-tags:
-    - Tutorials
----
-
 This tutorial is designed to help you run the TREES model in a "virtual environment," a quarantine chamber for software, so that it doesn't interfere with/get affected by your other R projects.
 
 If you just want to know what commands to run, you can skip to the "recap" section near the bottom.
